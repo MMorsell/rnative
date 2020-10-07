@@ -15,10 +15,24 @@ import {
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
+import auth from '@react-native-firebase/auth';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
+  auth()
+    .signInAnonymously()
+    .then(() => {
+      console.log('User signed in anonymously');
+    })
+    .catch((error) => {
+      if (error.code === 'auth/operation-not-allowed') {
+        console.log('Enable anonymous in your firebase console.');
+      }
+
+      console.error(error);
+    });
+
   return (
     <>
       <StatusBar barStyle="dark-content" />
