@@ -1,6 +1,19 @@
+import 'react-native-gesture-handler';
 import React, {useState, useEffect} from 'react';
-import {SafeAreaView, ScrollView, View, Text, StatusBar} from 'react-native';
-
+import {
+  SafeAreaView,
+  ScrollView,
+  View,
+  Text,
+  StatusBar,
+  Button,
+} from 'react-native';
+import {NavigationContainer} from '@react-navigation/native';
+import {
+  createStackNavigator,
+  StackNavigationProp,
+  StackScreenProps,
+} from '@react-navigation/stack';
 import {
   Header,
   LearnMoreLinks,
@@ -10,6 +23,10 @@ import {
 import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
 import Styles from './assets/Styles/Styles';
 import RegisterScreen from './src/screens/Register';
+import DetailsScreen from './src/screens/Details';
+import HomeScreen from './src/screens/Home';
+
+const Stack = createStackNavigator();
 
 declare const global: {HermesInternal: null | {}};
 
@@ -42,13 +59,17 @@ const App = () => {
   //     });
   // }
 
-  if (!user) {
-    return <RegisterScreen />;
-  }
+  // if (!user) {
+  //   return <RegisterScreen />;
+  // }
 
   return (
-    <>
-      <StatusBar barStyle="dark-content" />
+    <NavigationContainer>
+      <Stack.Navigator>
+        <Stack.Screen name="Home" component={HomeScreen} />
+        <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen name="Register" component={RegisterScreen} />
+        {/* <StatusBar barStyle="dark-content" />
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
@@ -87,8 +108,9 @@ const App = () => {
             <LearnMoreLinks />
           </View>
         </ScrollView>
-      </SafeAreaView>
-    </>
+      </SafeAreaView> */}
+      </Stack.Navigator>
+    </NavigationContainer>
   );
 };
 
