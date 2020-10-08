@@ -1,37 +1,50 @@
-import React from 'react';
-import {
-  SafeAreaView,
-  StyleSheet,
-  ScrollView,
-  View,
-  Text,
-  StatusBar,
-} from 'react-native';
+import React, {useState, useEffect} from 'react';
+import {SafeAreaView, ScrollView, View, Text, StatusBar} from 'react-native';
 
 import {
   Header,
   LearnMoreLinks,
-  Colors,
   DebugInstructions,
   ReloadInstructions,
 } from 'react-native/Libraries/NewAppScreen';
-import auth from '@react-native-firebase/auth';
+import auth, {FirebaseAuthTypes} from '@react-native-firebase/auth';
+import Styles from './assets/Styles/Styles';
+import RegisterScreen from './src/screens/Register';
 
 declare const global: {HermesInternal: null | {}};
 
 const App = () => {
-  auth()
-    .signInAnonymously()
-    .then(() => {
-      console.log('User signed in anonymously');
-    })
-    .catch((error) => {
-      if (error.code === 'auth/operation-not-allowed') {
-        console.log('Enable anonymous in your firebase console.');
-      }
+  const [loading, setLoading] = useState<boolean>(true);
+  const [user, setUser] = useState<FirebaseAuthTypes.User | null>(null);
 
-      console.error(error);
+  useEffect(() => {
+    auth().onAuthStateChanged((userState) => {
+      setUser(userState);
+
+      if (loading) {
+        setLoading(false);
+      }
     });
+  }, []);
+
+  // if (!loading) {
+  //   auth()
+  //     .signInAnonymously()
+  //     .then(() => {
+  //       console.log('User signed in anonymously');
+  //     })
+  //     .catch((error) => {
+  //       if (error.code === 'auth/operation-not-allowed') {
+  //         console.log('Enable anonymous in your firebase console.');
+  //       }
+
+  //       console.error(error);
+  //     });
+  // }
+
+  if (!user) {
+    return <RegisterScreen />;
+  }
 
   return (
     <>
@@ -39,35 +52,35 @@ const App = () => {
       <SafeAreaView>
         <ScrollView
           contentInsetAdjustmentBehavior="automatic"
-          style={styles.scrollView}>
+          style={Styles.scrollView}>
           <Header />
           {global.HermesInternal == null ? null : (
-            <View style={styles.engine}>
-              <Text style={styles.footer}>Engine: Hermes</Text>
+            <View style={Styles.engine}>
+              <Text style={Styles.footer}>Engine: Hermes</Text>
             </View>
           )}
-          <View style={styles.body}>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Step One</Text>
-              <Text style={styles.sectionDescription}>
-                Edit <Text style={styles.highlight}>App.tsx</Text> Wazaaaa
+          <View style={Styles.body}>
+            <View style={Styles.sectionContainer}>
+              <Text style={Styles.sectionTitle}>Step One</Text>
+              <Text style={Styles.sectionDescription}>
+                Edit <Text style={Styles.highlight}>App.tsx</Text> Wazaaaa
               </Text>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>See Your Changes</Text>
-              <Text style={styles.sectionDescription}>
+            <View style={Styles.sectionContainer}>
+              <Text style={Styles.sectionTitle}>See Your Changes</Text>
+              <Text style={Styles.sectionDescription}>
                 <ReloadInstructions />
               </Text>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Debug</Text>
-              <Text style={styles.sectionDescription}>
+            <View style={Styles.sectionContainer}>
+              <Text style={Styles.sectionTitle}>Debug</Text>
+              <Text style={Styles.sectionDescription}>
                 <DebugInstructions />
               </Text>
             </View>
-            <View style={styles.sectionContainer}>
-              <Text style={styles.sectionTitle}>Learn More</Text>
-              <Text style={styles.sectionDescription}>
+            <View style={Styles.sectionContainer}>
+              <Text style={Styles.sectionTitle}>Learn More</Text>
+              <Text style={Styles.sectionDescription}>
                 Read the docs to discover what to do next:
               </Text>
             </View>
@@ -78,44 +91,5 @@ const App = () => {
     </>
   );
 };
-
-const styles = StyleSheet.create({
-  scrollView: {
-    backgroundColor: Colors.lighter,
-  },
-  engine: {
-    position: 'absolute',
-    right: 0,
-  },
-  body: {
-    backgroundColor: Colors.white,
-  },
-  sectionContainer: {
-    marginTop: 32,
-    paddingHorizontal: 24,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '600',
-    color: Colors.black,
-  },
-  sectionDescription: {
-    marginTop: 8,
-    fontSize: 18,
-    fontWeight: '400',
-    color: Colors.dark,
-  },
-  highlight: {
-    fontWeight: '700',
-  },
-  footer: {
-    color: Colors.dark,
-    fontSize: 12,
-    fontWeight: '600',
-    padding: 4,
-    paddingRight: 12,
-    textAlign: 'right',
-  },
-});
 
 export default App;
